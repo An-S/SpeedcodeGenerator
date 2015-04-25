@@ -1,0 +1,404 @@
+#ifndef __MOS6502_H__
+#define __MOS6502_H__
+
+#include <stdint.h>
+
+typedef uint8_t MOS6502_1ByteOpcode_t;
+typedef uint8_t MOS6502_2ByteOpcode_t;
+typedef uint8_t MOS6502_3ByteOpcode_t;
+
+typedef struct
+{
+	MOS6502_1ByteOpcode_t cmd;
+} MOS6502_1ByteCmd_t;
+
+typedef struct
+{
+	MOS6502_2ByteOpcode_t cmd;
+	uint8_t arg;
+} MOS6502_2ByteCmd_t;
+
+typedef struct
+{
+	MOS6502_3ByteOpcode_t cmd;
+	union{
+       uintptr_t arg;
+       uint8_t* argPtr;
+	};
+} MOS6502_3ByteCmd_t;
+
+#define INLINE_MOS6502(opdef, arg) {INLINE_##opdef(arg)}
+#define INLINE_LDA_ABS(addr) {MOS6502_LDA_ABS, addr}
+#define INLINE_LDA_ABSX(addr) {MOS6502_LDA_ABSX, addr}
+#define INLINE_STA_ABSX(addr) {MOS6502_STA_ABSX, addr}
+#define INLINE_STA_ABS(addr) {MOS6502_STA_ABS, addr}
+#define INLINE_LDA_ABSY(addr) {MOS6502_LDA_ABSY, addr}
+#define INLINE_LDX_ABSY(addr) {MOS6502_LDX_ABSY, addr}
+#define INLINE_LDA_IMM(val) {MOS6502_LDA_IMM, val}
+#define INLINE_AND_ZP(zp) {MOS6502_AND_ZP, zp}
+#define INLINE_AND_IMM(arg) {MOS6502_AND_IMM, arg}
+#define INLINE_AXS_IMM(arg) {MOS6502_AXS_IMM, arg}
+#define INLINE_SAX_ABSY(arg) {MOS6502_SAX_ABSY, arg}
+
+#define INLINE_LDA_INDY(zp) {MOS6502_LDA_INDY, zp}
+#define INLINE_BEQ(bd) {MOS6502_BEQ, bd}
+//CODES 00-0F
+
+#define MOS6502_BRK  0x00
+#define MOS6502_ORA_XIND  0x01
+#define MOS6502_HLT  0x02
+#define MOS6502_KIL  0x02
+#define MOS6502_JAM  0x02
+#define MOS6502_SLO_XIND  0x03
+#define MOS6502_ASO_XIND  0x03
+#define MOS6502_NOP_ZP  0x04
+#define MOS6502_ORA_ZP  0x05
+#define MOS6502_ASL_ZP  0x06
+#define MOS6502_SLO_ZP  0x07
+#define MOS6502_ASO_ZP  0x07
+#define MOS6502_PHP  0x08
+#define MOS6502_ORA_IMM  0x09
+#define MOS6502_ASL  0x0A
+#define MOS6502_ANC_IMM  0x0B
+#define MOS6502_AAC_IMM  0x0B
+#define MOS6502_NOP_ABS  0x0C
+#define MOS6502_ORA_ABS  0x0D
+#define MOS6502_ASL_ABS  0x0E
+#define MOS6502_SLO_ABS  0x0F
+#define MOS6502_ASO_ABS  0x0F
+
+//CODES 10-1F
+#define MOS6502_BPL  0x10
+#define MOS6502_ORA_INDY  0x11
+#define MOS6502_HLT2  0x12
+#define MOS6502_KIL2  0x12
+#define MOS6502_JAM2  0x12
+#define MOS6502_SLO_INDY  0x13
+#define MOS6502_ASO_INDY  0x13
+#define MOS6502_NOP_ZPX  0x14
+#define MOS6502_ORA_ZPX  0x15
+#define MOS6502_ASL_ZPX  0x16
+#define MOS6502_SLO_ZPX  0x17
+#define MOS6502_ASO_ZPX  0x17
+#define MOS6502_CLC  0x18
+#define MOS6502_ORA_ABSY  0x19
+#define MOS6502_NOP2  0x1A
+#define MOS6502_SLO_ABSY  0x1B
+#define MOS6502_ASO_ABSY  0x1B
+#define MOS6502_NOP_ABSX  0x1C
+#define MOS6502_ORA_ABSX  0x1D
+#define MOS6502_ASL_ABSX  0x1E
+#define MOS6502_SLO_ABSX  0x1F
+#define MOS6502_ASO_ABSX  0x1F
+
+//CODES 20-2F
+#define MOS6502_JSR_ABS  0x20
+#define MOS6502_AND_XIND  0x21
+#define MOS6502_HLT3  0x22
+#define MOS6502_KIL3  0x22
+#define MOS6502_JAM3  0x22
+#define MOS6502_RLA_XIND  0x23
+#define MOS6502_BIT_ZP  0x24
+#define MOS6502_AND_ZP  0x25
+#define MOS6502_ROL_ZP  0x26
+#define MOS6502_RLA_ZP  0x27
+#define MOS6502_PLP  0x28
+#define MOS6502_AND_IMM  0x29
+#define MOS6502_ROL  0x2A
+#define MOS6502_ANC_IMM2  0x2B
+#define MOS6502_AAC_IMM2  0x2B
+#define MOS6502_BIT_ABS  0x2C
+#define MOS6502_AND_ABS  0x2D
+#define MOS6502_ROL_ABS  0x2E
+#define MOS6502_RLA_ABS  0x2F
+
+//CODES 30-3F
+#define MOS6502_BMI  0x30
+#define MOS6502_AND_INDY  0x31
+#define MOS6502_HLT4  0x32
+#define MOS6502_KIL4  0x32
+#define MOS6502_JAM4  0x32
+#define MOS6502_RLA_INDY  0x33
+#define MOS6502_NOP_ZPX2  0x34
+#define MOS6502_AND_ZPX  0x35
+#define MOS6502_ROL_ZPX  0x36
+#define MOS6502_RLA_ZPX  0x37
+#define MOS6502_SEC  0x38
+#define MOS6502_AND_ABSY  0x39
+#define MOS6502_NOP3  0x3A
+#define MOS6502_RLA_ABSY  0x3B
+#define MOS6502_NOP_ABSX2  0x3C
+#define MOS6502_AND_ABSX  0x3D
+#define MOS6502_ROL_ABSX  0x3E
+#define MOS6502_RLA_ABSX  0x3F
+
+//CODES 40-4F
+#define MOS6502_RTI  0x40
+#define MOS6502_EOR_XIND  0x41
+#define MOS6502_HLT5  0x42
+#define MOS6502_KIL5  0x42
+#define MOS6502_JAM5  0x42
+#define MOS6502_SRE_XIND  0x43
+#define MOS6502_LSE_XIND  0x43
+#define MOS6502_NOP_ZP2  0x44
+#define MOS6502_EOR_ZP  0x45
+#define MOS6502_LSR_ZP  0x46
+#define MOS6502_SRE_ZP  0x47
+#define MOS6502_LSE_ZP  0x47
+#define MOS6502_PHA  0x48
+#define MOS6502_EOR_IMM  0x49
+#define MOS6502_LSR  0x4A
+#define MOS6502_ALR_IMM  0x4B
+#define MOS6502_ASR_IMM  0x4B
+#define MOS6502_JMP_ABS  0x4C
+#define MOS6502_EOR_ABS  0x4D
+#define MOS6502_LSR_ABS  0x4E
+#define MOS6502_SRE_ABS  0x4F
+#define MOS6502_LSE_ABS  0x4F
+
+//CODES 50-5F
+#define MOS6502_BVC  0x50
+#define MOS6502_EOR_INDY  0x51
+#define MOS6502_HLT6  0x52
+#define MOS6502_KIL6  0x52
+#define MOS6502_JAM6  0x52
+#define MOS6502_SRE_INDY  0x53
+#define MOS6502_LSE_INDY  0x53
+#define MOS6502_NOP_ZPX3  0x54
+#define MOS6502_EOR_ZPX  0x55
+#define MOS6502_LSR_ZPX  0x56
+#define MOS6502_SRE_ZPX  0x57
+#define MOS6502_LSE_ZPX  0x57
+#define MOS6502_CLI  0x58
+#define MOS6502_EOR_ABSY  0x59
+#define MOS6502_NOP4  0x5A
+#define MOS6502_SRE_ABSY  0x5B
+#define MOS6502_LSE_ABSY  0x5B
+#define MOS6502_NOP_ABSX3  0x5C
+#define MOS6502_EOR_ABSX  0x5D
+#define MOS6502_LSR_ABSX  0x5E
+#define MOS6502_SRE_ABSX  0x5F
+#define MOS6502_LSE_ABSX  0x5F
+
+
+//CODES 60-6F
+#define MOS6502_RTS  0x60
+#define MOS6502_ADC_XIND  0x61
+#define MOS6502_HLT7  0x62
+#define MOS6502_KIL7  0x62
+#define MOS6502_JAM7  0x62
+#define MOS6502_RRA_XIND  0x63
+#define MOS6502_NOP_ZP3  0x64
+#define MOS6502_ADC_ZP  0x65
+#define MOS6502_ROR_ZP  0x66
+#define MOS6502_RRA_ZP  0x67
+#define MOS6502_PLA  0x68
+#define MOS6502_ADC_IMM  0x69
+#define MOS6502_ROR  0x6A
+#define MOS6502_ARR_IMM  0x6B
+#define MOS6502_JMP_IND  0x6C
+#define MOS6502_ADC_ABS  0x6D
+#define MOS6502_ROR_ABS  0x6E
+#define MOS6502_RRA_ABS  0x6F
+
+
+//CODES 70-7F
+#define MOS6502_BVS  0x70
+#define MOS6502_ADC_INDY  0x71
+//#define MOS6502_HLT  0x72
+//#define MOS6502_KIL  0x72
+//#define MOS6502_JAM  0x72
+#define MOS6502_RRA_INDY  0x73
+//#define MOS6502_NOP_ZPX  0x74
+#define MOS6502_ADC_ZPX  0x75
+#define MOS6502_ROR_ZPX  0x76
+#define MOS6502_RRA_ZPX  0x77
+#define MOS6502_SEI  0x78
+#define MOS6502_ADC_ABSY  0x79
+//#define MOS6502_NOP  0x7A
+#define MOS6502_RRA_ABSY  0x7B
+//#define MOS6502_NOP_ABSX  0x7C
+#define MOS6502_ADC_ABSX  0x7D
+#define MOS6502_ROR_ABSX  0x7E
+#define MOS6502_RRA_ABSX  0x7F
+
+
+//CODES 80-8F
+#define MOS6502_NOP_IMM  0x80
+#define MOS6502_STA_XIND  0x81
+//#define MOS6502_NOP_IMM  0x82
+#define MOS6502_SAX_XIND  0x83
+#define MOS6502_STY_ZP  0x84
+#define MOS6502_STA_ZP  0x85
+#define MOS6502_STX_ZP  0x86
+#define MOS6502_SAX_ZP  0x87
+#define MOS6502_DEY  0x88
+//#define MOS6502_NOP_IMM  0x89
+#define MOS6502_TXA  0x8A
+#define MOS6502_XAA_IMM  0x8B
+#define MOS6502_ANE_IMM  0x8B
+#define MOS6502_STY_ABS  0x8C
+#define MOS6502_STA_ABS  0x8D
+#define MOS6502_STX_ABS  0x8E
+#define MOS6502_SAX_ABS  0x8F
+
+
+//CODES 90-9F
+#define MOS6502_BCC  0x90
+#define MOS6502_STA_INDY  0x91
+//#define MOS6502_HLT  0x92
+//#define MOS6502_KIL  0x92
+//#define MOS6502_JAM  0x92
+#define MOS6502_AHX_INDY  0x93
+#define MOS6502_SAH_INDY  0x93
+#define MOS6502_AXA_INDY  0x93
+#define MOS6502_STY_ZPX 0x94
+#define MOS6502_STA_ZPX  0x95
+#define MOS6502_STX_ZPY  0x96
+#define MOS6502_SAX_ZPY  0x97
+#define MOS6502_TYA  0x98
+#define MOS6502_STA_ABSY  0x99
+#define MOS6502_TXS  0x9A
+#define MOS6502_TAS_ABSY  0x9B
+#define MOS6502_XAS_ABSY  0x9B
+#define MOS6502_SHS_ABSY  0x9B
+#define MOS6502_SHY_ABSX  0x9C
+#define MOS6502_SYA_ABSX  0x9C
+#define MOS6502_STA_ABSX  0x9D
+#define MOS6502_SHX_ABSY  0x9E
+#define MOS6502_SXA_ABSY  0x9E
+#define MOS6502_AHX_ABSY  0x9F
+#define MOS6502_SAH_ABSY  0x9F
+#define MOS6502_AXA_ABSY  0x9F
+
+
+//CODES A0-AF
+#define MOS6502_LDY_IMM  0xA0
+#define MOS6502_LDA_XIND  0xA1
+#define MOS6502_LDX_IMM  0xA2
+#define MOS6502_LAX_XIND  0xA3
+#define MOS6502_LDY_ZP  0xA4
+#define MOS6502_LDA_ZP  0xA5
+#define MOS6502_LDX_ZP  0xA6
+#define MOS6502_LAX_ZP  0xA7
+#define MOS6502_TAY  0xA8
+#define MOS6502_LDA_IMM  0xA9
+#define MOS6502_TAX  0xAA
+#define MOS6502_LAX_IMM  0xAB
+#define MOS6502_LDY_ABS  0xAC
+#define MOS6502_LDA_ABS  0xAD
+#define MOS6502_LDX_ABS  0xAE
+#define MOS6502_LAX_ABS  0xAF
+
+
+//CODES B0-BF
+#define MOS6502_BCS  0xB0
+#define MOS6502_LDA_INDY  0xB1
+//#define MOS6502_HLT  0xB2
+//#define MOS6502_KIL  0xB2
+//#define MOS6502_JAM  0xB2
+#define MOS6502_LAX_INDY  0xB3
+#define MOS6502_LDY_ZPX  0xB4
+#define MOS6502_LDA_ZPX  0xB5
+#define MOS6502_LDX_ZPY  0xB6
+#define MOS6502_LAX_ZPY  0xB7
+#define MOS6502_CLV  0xB8
+#define MOS6502_LDA_ABSY  0xB9
+#define MOS6502_TSX  0xBA
+#define MOS6502_LAS_ABSY  0xBB
+#define MOS6502_LAR_ABSY  0xBB
+#define MOS6502_LAE_ABSY  0xBB
+#define MOS6502_LDY_ABSX  0xBC
+#define MOS6502_LDA_ABSX  0xBD
+#define MOS6502_LDX_ABSY  0xBE
+#define MOS6502_LAX_ABSY  0xBF
+
+
+//CODES C0-CF
+#define MOS6502_CPY_IMM  0xC0
+#define MOS6502_CMP_XIND  0xC1
+//#define MOS6502_NOP_IMM  0xC2
+#define MOS6502_DCP_XIND  0xC3
+#define MOS6502_CPY_ZP  0xC4
+#define MOS6502_CMP_ZP  0xC5
+#define MOS6502_DEC_ZP  0xC6
+#define MOS6502_DCP_ZP  0xC7
+#define MOS6502_INY  0xC8
+#define MOS6502_CMP_IMM  0xC9
+#define MOS6502_DEX  0xCA
+#define MOS6502_AXS_IMM  0xCB
+#define MOS6502_AAX_IMM  0xCB
+#define MOS6502_CPY_ABS  0xCC
+#define MOS6502_CMP_ABS  0xCD
+#define MOS6502_DEC_ABS  0xCE
+#define MOS6502_DCP_ABS  0xCF
+
+
+//CODES D0-DF
+#define MOS6502_BNE  0xD0
+#define MOS6502_CMP_INDY  0xD1
+//#define MOS6502_HLT  0xD2
+//#define MOS6502_KIL  0xD2
+//#define MOS6502_JAM  0xD2
+#define MOS6502_DCP_INDY  0xD3
+//#define MOS6502_NOP_ZPX  0xD4
+#define MOS6502_CMP_ZPX  0xD5
+#define MOS6502_DEC_ZPX  0xD6
+#define MOS6502_DCP_ZPX  0xD7
+#define MOS6502_CLD  0xD8
+#define MOS6502_CMP_ABSY  0xD9
+//#define MOS6502_NOP  0xDA
+#define MOS6502_DCP_ABSY  0xDB
+//#define MOS6502_NOP_ABSX  0xDC
+#define MOS6502_CMP_ABSX  0xDD
+#define MOS6502_DEC_ABSX  0xDE
+#define MOS6502_DCP_ABSX  0xDF
+
+
+//CODES E0-EF
+#define MOS6502_CPX_IMM  0xE0
+#define MOS6502_SBC_XIND  0xE1
+//#define MOS6502_NOP_IMM  0xE2
+#define MOS6502_ISC_XIND  0xE3
+#define MOS6502_ISB_XIND  0xE3
+#define MOS6502_CPX_ZP  0xE4
+#define MOS6502_SBC_ZP  0xE5
+#define MOS6502_INC_ZP  0xE6
+#define MOS6502_ISC_ZP  0xE7
+#define MOS6502_ISB_ZP  0xE7
+#define MOS6502_INX  0xE8
+#define MOS6502_SBC_IMM  0xE9
+#define MOS6502_NOP  0xEA
+//#define MOS6502_SBC_IMM  0xEB
+#define MOS6502_CPX_ABS  0xEC
+#define MOS6502_SBC_ABS  0xED
+#define MOS6502_INC_ABS  0xEE
+#define MOS6502_ISC_ABS  0xEF
+#define MOS6502_ISB_ABS  0xEF
+
+
+//CODES F0-FF
+#define MOS6502_BEQ  0xF0
+#define MOS6502_SBC_INDY  0xF1
+//#define MOS6502_HLT  0xF2
+//#define MOS6502_KIL  0xF2
+//#define MOS6502_JAM  0xF2
+#define MOS6502_ISC_INDY  0xF3
+#define MOS6502_ISB_INDY  0xF3
+//#define MOS6502_NOP_ZPX  0xF4
+#define MOS6502_SBC_ZPX  0xF5
+#define MOS6502_INC_ZPX  0xF6
+#define MOS6502_ISC_ZPX  0xF7
+#define MOS6502_ISB_ZPX  0xF7
+#define MOS6502_SED  0xF8
+#define MOS6502_SBC_ABSY  0xF9
+//#define MOS6502_NOP  0xFA
+#define MOS6502_ISC_ABSY  0xFB
+#define MOS6502_ISB_ABSY  0xFB
+//#define MOS6502_NOP_ABSX  0xFC
+#define MOS6502_SBC_ABSX  0xFD
+#define MOS6502_INC_ABSX  0xFE
+#define MOS6502_ISC_ABSX  0xFF
+#define MOS6502_ISB_ABSX  0xFF
+
+#endif

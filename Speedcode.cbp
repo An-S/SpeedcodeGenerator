@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="SpeedcodeGen" />
+		<Option makefile="stripescroll.mak" />
+		<Option pch_mode="2" />
+		<Option compiler="cc65" />
+		<Option virtualFolders="Testcases\;" />
+		<Option extended_obj_names="1" />
+		<Build>
+			<Target title="Debug">
+				<Option output="./Speedcode_dbg.lib" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug" />
+				<Option type="2" />
+				<Option compiler="cc65" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="..\..\lib\carlos.lib" />
+					<Add library="C:\Users\MyAcer\Documents\Programmieren\EigeneCProgramme\CuTest\cutest-cc65_Dbg.lib" />
+					<Add library="C:\Users\MyAcer\Documents\Programmieren\EigeneCProgramme\CuTest\CuAlloc\CuAllocDbg.lib" />
+					<Add library="C:\Users\MyAcer\Documents\Programmieren\EigeneCProgramme\CuTest\CuString\CutestString-cc65Dbg.lib" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="./Speedcode.lib" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release" />
+				<Option type="2" />
+				<Option compiler="cc65" />
+				<Compiler>
+					<Add option="-DNDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add library="..\..\lib\carlos.lib" />
+				</Linker>
+			</Target>
+			<Target title="UnitTest">
+				<Option output="Speedcode_tests.prg" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="obj/UnitTests" />
+				<Option type="5" />
+				<Option compiler="cc65" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DUTEST" />
+					<Add directory="../../EigeneCProgramme/CuTest" />
+				</Compiler>
+				<Linker>
+					<Add library="..\..\..\EigeneCProgramme\CuTest\cutest-cc65_Dbg.lib" />
+					<Add library="..\..\..\EigeneCProgramme\CuTest\CuString\CutestString-cc65Dbg.lib" />
+					<Add library="..\..\lib\carlos.lib" />
+					<Add library="..\..\..\EigeneCProgramme\CuTest\CuAlloc\CuAllocDbg.lib" />
+				</Linker>
+			</Target>
+			<Target title="GCCDebug">
+				<Option output="Speedcode_Dbg" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/GCCDebug" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-fplan9-extensions -std=c99" />
+				</Compiler>
+				<Linker>
+					<Add library="..\..\..\..\EigeneCProgramme\CuTest\CuString\libCutestString-cc65_dbg.a" />
+					<Add library="..\..\..\..\EigeneCProgramme\CuTest\libcutest_Dbg.a" />
+					<Add library="..\..\..\..\EigeneCProgramme\CuTest\CuAlloc\libCuAllocDbg.a" />
+				</Linker>
+			</Target>
+			<Target title="GCCRelease">
+				<Option output="Speedcode" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/GCCRelease" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-fplan9-extensions -std=c99" />
+					<Add option="-DNDEBUG" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="..\..\..\..\EigeneCProgramme\CuTest\CuAlloc\libCuAlloc.a" />
+					<Add library="..\..\..\..\EigeneCProgramme\CuTest\CuString\libCutestString-cc65.a" />
+					<Add library="..\..\..\..\EigeneCProgramme\CuTest\libcutest_Dbg.a" />
+				</Linker>
+			</Target>
+			<Target title="GCCUnitTest">
+				<Option output="Speedcode_tests" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/GCCUnitTest" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-fplan9-extensions -std=c99" />
+				</Compiler>
+				<Linker>
+					<Add library="..\..\..\..\EigeneCProgramme\CuTest\libcutest_Dbg.a" />
+					<Add library="..\..\..\..\EigeneCProgramme\CuTest\CuString\libCutestString-cc65_dbg.a" />
+					<Add library="..\..\..\..\EigeneCProgramme\CuTest\CuAlloc\libCuAllocDbg.a" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="C:\Users\MyAcer\Documents\Programmieren\C64\Stripescroll\_stripescrollText\StripescrollText_tests.exe" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="GCCall" targets="GCCDebug;GCCRelease;GCCUnitTest;" />
+			<Add alias="all" targets="Debug;Release;UnitTest;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add directory="C:/Users/MyAcer/Documents/Programmieren/C64/include" />
+			<Add directory="C:/Users/MyAcer/Documents/Programmieren/EigeneCProgramme/CuTest" />
+		</Compiler>
+		<ExtraCommands>
+			<Add after="xcopy /y *.h ..\..\include\speedcode" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="asmtest.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="calc_speedcodesize.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="calc_speedcodesize.lst" />
+		<Unit filename="calc_speedcodesize_dbg.lst" />
+		<Unit filename="enumtest.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="iterlooptest.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="maketest.mak" />
+		<Unit filename="opcodes_incl_illegals.h" />
+		<Unit filename="pointertest.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="pointertoarraytest.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="recursiontest.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="scrollfrac.s">
+			<Option link="0" />
+			<Option weight="100" />
+		</Unit>
+		<Unit filename="spdc.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="speedcode.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="speedcode.h" />
+		<Unit filename="speedcode_ExternalTypes.h" />
+		<Unit filename="speedcode_Internal.h" />
+		<Unit filename="speedcode_addcode.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="speedcode_getcounter.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="speedcode_macros.h" />
+		<Unit filename="speedcodeasm.s">
+			<Option weight="100" />
+		</Unit>
+		<Unit filename="structnamespacetest.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="test.c">
+			<Option compilerVar="CC" />
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="testfunccall.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="testgetelement.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="testmemcpy.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="testspdc.c">
+			<Option compilerVar="CC" />
+			<Option target="UnitTest" />
+			<Option target="GCCUnitTest" />
+		</Unit>
+		<Unit filename="testspdc.h" />
+		<Unit filename="testspdc.mak" />
+		<Unit filename="testspdc.map" />
+		<Unit filename="testspdcasm.s">
+			<Option target="UnitTest" />
+			<Option target="GCCUnitTest" />
+		</Unit>
+		<Unit filename="typetest.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Unit filename="uniontest.c">
+			<Option compilerVar="CC" />
+			<Option link="0" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
