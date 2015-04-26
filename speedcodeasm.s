@@ -25,14 +25,12 @@
     sta ptr1
     stx ptr1+1
     jsr popa
-	sta addsize
-    ;lda #$15;size
-    tay
+	tax ;x is not used else
+	tay
 copyagain
-    dey
-    cpy #15
+    cpy #16
     bcs jd0
-
+    tya
     and #15
     asl
     sta jmpdest
@@ -45,23 +43,18 @@ jmpdest = *+1
 
 .REPEAT 16,i
 .ident(.sprintf("jd%d",i))
+    dey
     lda (ptr1),y
     sta (ptr2),y
-    dey
 .ENDREPEAT
 jd16
-    cpy #$ff
-    beq raus
-    iny
-    tya
+    cpy #0
     jne copyagain
 
-raus:
-    ldx ptr2+1
-    lda ptr2
+    txa
     clc
-addsize = *+1
-    adc #0
+    adc ptr2
+    ldx ptr2+1
     bcc :+
     inx
     :

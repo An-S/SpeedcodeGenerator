@@ -40,20 +40,22 @@ spcode_t* __fastcall__ spcode_SetDestination(spcode_t *dest)
 //***********************************************************************************
 //Replicate the small piece of assembler code and modify the code after each copy
 //***********************************************************************************
-void __fastcall__ spcode_CopyPart(spcode_PartSpec_t *spcode_partdef)
+void __fastcall__ spcode_CopyPart(register spcode_PartSpec_t *spcode_partdef)
 {
 	//void (*callback(unsigned int*)) = spcode_partdef->callback;
     static uint8_t rts = 0x60;
 
 	dprintf("-- Called \"spcode_CopyPart\", &Partspec=%x --\n", spcode_partdef);
 
+    //Optimization could be to copy only necessary information like pointer to assembly and size
+    //Use local pointer var i instead of spcode_def_loc.Counters.PartRepeat
 	COPY_SPEEDCODEPART_SPEC(*spcode_partdef, spdcpartdef_loc);
 	if(NULL == spdcpartdef_loc.Callback){spdcpartdef_loc.Callback = (void*)&rts;}
 
 	//assert( 0 == memcmp ( spcode_partdef, &spdcpartdef_loc, sizeof(spcode_PartSpec_t) ) );
 	//Assert that the struct spcode_partdef is correctly copied to the local representation
 
-	spcode_def_loc.Limits.PartRepeat = spcode_def_loc.Counters.PartRepeat = spdcpartdef_loc.Repeats;
+	spcode_def_loc.Counters.PartRepeat = spcode_def_loc.Limits.PartRepeat = spdcpartdef_loc.Repeats;
 	assert ( 0 == spcode_GetCounter(SPCODE_PARTREPEAT_IDX) );
 	//GetCounter must return zero for the startvalue of the counter
 
@@ -61,7 +63,7 @@ void __fastcall__ spcode_CopyPart(spcode_PartSpec_t *spcode_partdef)
         /*To avoid side effects using this loop function with recursive functions, the comparison and the incrementation are not
             bundled together in one command*/
     {
-        dprintf("  Iteration:%d, Counter:%d\n", spcode_def_loc.Counters.PartRepeat, spcode_GetCounter(SPCODE_PARTREPEAT_IDX));
+        dprintf("  Iteration:%d, Counter:%d\n", spcode_def_loc.Counters.PartRepeat-1, spcode_GetCounter(SPCODE_PARTREPEAT_IDX));
         //if(spdcpartdef_loc.callback){spdcpartdef_loc.callback(spdcpartdef_loc.parameters);}
         //(unsigned char*)storedest = (unsigned char*)memcpy(storedest, spdcpartdef_loc.assembly_code, spdcpartdef_loc.size)+spdcpartdef_loc.size;
         //copycode();
@@ -81,7 +83,7 @@ void __fastcall__ spcode_CopyPart(spcode_PartSpec_t *spcode_partdef)
 //***********************************************************************************
 void spcode_Add (void* source, size_t size)
 {
-	(unsigned char*)spcode_StoreDest = (unsigned char*)memcpy256(size, source, spcode_StoreDest);
+	(unsigned char*)spcode_StoreDest = (unsigned char*)fastmemcpy256(size, source, spcode_StoreDest);
 	assert ( 0 == memcmp (source, (unsigned char*)spcode_StoreDest-size, size) );
 	//Assert that copying was successful
 
