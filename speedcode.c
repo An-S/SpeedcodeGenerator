@@ -50,7 +50,7 @@ void __fastcall__ spcode_CopyPart(spcode_PartSpec_t *spcode_partdef)
 	COPY_SPEEDCODEPART_SPEC(*spcode_partdef, spdcpartdef_loc);
 	if(!spdcpartdef_loc.Callback){spdcpartdef_loc.Callback = (void*)&rts;}
 
-	assert( 0 == memcmp ( spcode_partdef, &spdcpartdef_loc, sizeof(spcode_PartSpec_t) ) );
+	//assert( 0 == memcmp ( spcode_partdef, &spdcpartdef_loc, sizeof(spcode_PartSpec_t) ) );
 	//Assert that the struct spcode_partdef is correctly copied to the local representation
 
 	spcode_def_loc.Limits.PartRepeat = spcode_def_loc.Counters.PartRepeat = spdcpartdef_loc.Repeats;
@@ -69,7 +69,8 @@ void __fastcall__ spcode_CopyPart(spcode_PartSpec_t *spcode_partdef)
 
         //Secure, because pointer to rts is written if function pointer is NULL
         spdcpartdef_loc.Callback(spdcpartdef_loc.Parameters);
-        (unsigned char*)spcode_StoreDest = (unsigned char*)memcpy256(spdcpartdef_loc.Size, spdcpartdef_loc.AssemblyCode, spcode_StoreDest);
+        //(unsigned char*)spcode_StoreDest = (unsigned char*)memcpy256(spdcpartdef_loc.Size, spdcpartdef_loc.AssemblyCode, spcode_StoreDest);
+        (unsigned char*)spcode_StoreDest = (unsigned char*)fastmemcpy256(spdcpartdef_loc.Size, spdcpartdef_loc.AssemblyCode, spcode_StoreDest);
         //spcode_Add (spdcpartdef_loc.AssemblyCode, spdcpartdef_loc.Size);
         //Inner Loop Counter works ok, if spcode_Add is not called. Something interferes!
     }

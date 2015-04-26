@@ -99,4 +99,5 @@
 	void __fastcall__ spcode_CopyPart(register spcode_PartSpec_t *spcode_partdef);
 	//************
     int spcode_InitCounters(register spcode_Spec_t *spec);
+    void* fastcall fastmemcpy256(uint8_t n, void *src, void *dest);
 #endif
