@@ -117,8 +117,8 @@
 			<Add alias="all" targets="Debug;Release;UnitTest;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add directory="C:/Users/MyAcer/Documents/Programmieren/C64/include" />
-			<Add directory="C:/Users/MyAcer/Documents/Programmieren/EigeneCProgramme/CuTest" />
+			<Add directory="../../include" />
+			<Add directory="../../../EigeneCProgramme/CuTest" />
 		</Compiler>
 		<ExtraCommands>
 			<Add after="xcopy /y *.h ..\..\include\speedcode" />

@@ -40,4 +40,13 @@ jmpdest = *+1
     iny
     tya
     bne copyagain
-raus
+raus:
+    ldx ptr2+1
+    lda ptr2
+    clc
+    adc #0
+    bcc :+
+    inx
+    :
+    rts
+

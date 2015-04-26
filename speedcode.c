@@ -8,7 +8,7 @@
 
 #include "speedcode.h"
 #include "speedcode_Internal.h"
-#include "mem\mem.h"
+#include <mem\mem.h>
 
 /*CC65 Bug: &nameofstruct != nameofstruct
 						void (*dest)(void), ++dest increases dest by 2 instead of one!*/
