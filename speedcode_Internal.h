@@ -92,6 +92,11 @@
 
     #undef SPCODE_PART_MEMBERS
     #undef ITERATORS
+
+    extern spcode_SpecAndState_t spcode_def_loc;
+    extern spcode_PartSpec_t spdcpartdef_loc;
+
+    extern spcode_t *spcode_StoreDest;
 	//************
 	//Dont use these function prototypes directly
 	spcode_t*  __fastcall__ spcode_SetDestination(spcode_t *dest);
@@ -100,4 +105,9 @@
 	//************
     int spcode_InitCounters(register spcode_Spec_t *spec);
     void* fastcall fastmemcpy256(uint8_t n, void *src, void *dest);
+
+    //must be fastcall as they do not care about stack pointer
+    void fastcall fastCallback(void* par);
+    void fastcall setCallbackJmpAddr(void* jmpaddr);
+
 #endif

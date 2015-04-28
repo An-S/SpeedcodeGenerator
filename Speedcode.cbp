@@ -206,10 +206,8 @@
 			<Option target="UnitTest" />
 			<Option target="GCCUnitTest" />
 		</Unit>
-		<Unit filename="testspdc.c.lst" />
 		<Unit filename="testspdc.h" />
 		<Unit filename="testspdc.mak" />
-		<Unit filename="testspdc.map" />
 		<Unit filename="testspdcasm.s">
 			<Option target="UnitTest" />
 			<Option target="GCCUnitTest" />

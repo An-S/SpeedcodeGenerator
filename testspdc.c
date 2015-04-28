@@ -31,11 +31,15 @@ void waitkey(void)
 	cgetc();
 }
 
-void modspcode(register void* par){
-	typedef spcodepart_parameters* p;
+void fastcall initspcode(void *par){
+    typedef spcodepart_parameters* p;
+    testspcode.src = ((p)par)->srcstartadr-1;
+    testspcode.dest = ((p)par)->deststartadr-1;
+}
 
-	testspcode.src = ((p)par)->srcstartadr + spcode_GetCounter(SPCODE_PARTREPEAT_IDX);
-	testspcode.dest = ((p)par)->deststartadr + spcode_GetCounter(SPCODE_PARTREPEAT_IDX);
+void fastcall modspcode(void){
+    ++testspcode.src;// = ((p)par)->srcstartadr + spcode_GetCounter(SPCODE_PARTREPEAT_IDX);
+	++testspcode.dest; //= ((p)par)->deststartadr + spcode_GetCounter(SPCODE_PARTREPEAT_IDX);
 }
 
 int testFastmemcpy256(void){
@@ -105,7 +109,9 @@ int TestSpeedcodeCreateFunc(void)
 			&testspcode,
 			(size_t)&spcodelen,
 			2000,
+			initspcode,
 			modspcode,
+			NULL,
 			&spar
 		}
 	};
@@ -141,7 +147,7 @@ int TestSpeedcodeCreateFunc(void)
 	spcodeadr = spcode_Create(&spcodedef, spcodeadr);
 	clock_temp = clock() - clock_temp;
 
-	printf("Clocks needed for setup:%lu", clock_temp);
+	printf("Time needed for setup:%lu ms", (1000*clock_temp)/CLOCKS_PER_SEC);
 	free(spcodeadr);
 	waitkey();
 
@@ -151,7 +157,7 @@ int TestSpeedcodeCreateFunc(void)
 int main(void)
 {
 	testFastmemcpy256();
-	TestSpeedcodeCopyPartFunc();
+	//TestSpeedcodeCopyPartFunc();
 	TestSpeedcodeCreateFunc();
 
 

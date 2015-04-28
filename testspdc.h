@@ -16,7 +16,7 @@ typedef struct
 	uint8_t* dest;
 } spcodepart_variables;
 
-void modspcode(register void*);
+void fastcall modspcode(void);
 
 
 extern spcodepart_variables testspcode;

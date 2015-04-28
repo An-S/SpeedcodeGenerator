@@ -27,7 +27,7 @@ spcode_PartSpec_t spdcpartdef_loc;
 //ptrdiff_t counter_offset;
 // Offset between storage area of maxima and counters
 
-static spcode_t *spcode_StoreDest;
+spcode_t *spcode_StoreDest;
 
 
 
@@ -42,22 +42,28 @@ spcode_t* __fastcall__ spcode_SetDestination(spcode_t *dest)
 //***********************************************************************************
 void __fastcall__ spcode_CopyPart(register spcode_PartSpec_t *spcode_partdef)
 {
-	//void (*callback(unsigned int*)) = spcode_partdef->callback;
-    static uint8_t rts = 0x60;
+	//static spcode_PartSpec_t *oldspec = NULL;
 
 	dprintf("-- Called \"spcode_CopyPart\", &Partspec=%x --\n", spcode_partdef);
 
     //Optimization could be to copy only necessary information like pointer to assembly and size
     //Use local pointer var i instead of spcode_def_loc.Counters.PartRepeat
-	COPY_SPEEDCODEPART_SPEC(*spcode_partdef, spdcpartdef_loc);
-	if(NULL == spdcpartdef_loc.Callback){spdcpartdef_loc.Callback = (void*)&rts;}
+	//if (oldspec != spcode_partdef)
+    COPY_SPEEDCODEPART_SPEC(*spcode_partdef, spdcpartdef_loc);
+    //oldspec = spcode_partdef;
 
-	//assert( 0 == memcmp ( spcode_partdef, &spdcpartdef_loc, sizeof(spcode_PartSpec_t) ) );
+	//not needed anymore. is handled by own asm call code
+	//if(NULL == spdcpartdef_loc.Callback){spdcpartdef_loc.Callback = (void*)&rts;}
+
+	assert( 0 == memcmp ( spcode_partdef, &spdcpartdef_loc, sizeof(spcode_PartSpec_t) ) );
 	//Assert that the struct spcode_partdef is correctly copied to the local representation
 
 	spcode_def_loc.Counters.PartRepeat = spcode_def_loc.Limits.PartRepeat = spdcpartdef_loc.Repeats;
 	assert ( 0 == spcode_GetCounter(SPCODE_PARTREPEAT_IDX) );
 	//GetCounter must return zero for the startvalue of the counter
+
+    if (NULL != spdcpartdef_loc.Setup) spdcpartdef_loc.Setup(spdcpartdef_loc.Parameters);
+    setCallbackJmpAddr(spdcpartdef_loc.Callback);
 
     for( ;spcode_def_loc.Counters.PartRepeat > 0; --spcode_def_loc.Counters.PartRepeat )
         /*To avoid side effects using this loop function with recursive functions, the comparison and the incrementation are not
@@ -70,25 +76,18 @@ void __fastcall__ spcode_CopyPart(register spcode_PartSpec_t *spcode_partdef)
         //dprintf("  Partrepeatcount: %d\n", spcode_def_loc.repeat.part);
 
         //Secure, because pointer to rts is written if function pointer is NULL
-        spdcpartdef_loc.Callback(spdcpartdef_loc.Parameters);
+        //spdcpartdef_loc.Callback(spdcpartdef_loc.Parameters);
+        fastCallback(spdcpartdef_loc.Parameters);
         //(unsigned char*)spcode_StoreDest = (unsigned char*)memcpy256(spdcpartdef_loc.Size, spdcpartdef_loc.AssemblyCode, spcode_StoreDest);
         (unsigned char*)spcode_StoreDest = (unsigned char*)fastmemcpy256(spdcpartdef_loc.Size, spdcpartdef_loc.AssemblyCode, spcode_StoreDest);
         //spcode_Add (spdcpartdef_loc.AssemblyCode, spdcpartdef_loc.Size);
         //Inner Loop Counter works ok, if spcode_Add is not called. Something interferes!
     }
+    if (NULL != spdcpartdef_loc.Teardown) spdcpartdef_loc.Setup(spdcpartdef_loc.Teardown);
+
 }
 
-//***********************************************************************************
-//Add a small piece of assembler code to the generated speedcode
-//***********************************************************************************
-void spcode_Add (void* source, size_t size)
-{
-	(unsigned char*)spcode_StoreDest = (unsigned char*)fastmemcpy256(size, source, spcode_StoreDest);
-	assert ( 0 == memcmp (source, (unsigned char*)spcode_StoreDest-size, size) );
-	//Assert that copying was successful
 
-	//(unsigned char*)memcpy(storedest, source, size) + size;
-}
 
 //***********************************************************************************
 //Run the loops for the replication and call routine for copying the assembly code

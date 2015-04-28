@@ -1,7 +1,7 @@
 #ifndef __SPEEDC_MACROS_H
 #define __SPEEDC_MACROS_H
 
-#ifndef NDEBUG
+#ifdef DPRINT
 	#define dprintf(...) printf(__VA_ARGS__)
 #else
 	#define dprintf(...)
@@ -10,7 +10,9 @@
 
 #define COPY_SPEEDCODEPART_SPEC(src, dest)\
 	(dest).Parameters = (src).Parameters;\
+	(dest).Setup = (src).Setup;\
 	(dest).Callback = (src).Callback;\
+	(dest).Teardown = (src).Teardown;\
 	(dest).Repeats = (src).Repeats;\
 	(dest).Size = (src).Size;\
 	(dest).AssemblyCode = (src).AssemblyCode;
@@ -21,5 +23,5 @@
 	(dest).Max.x = (src).Max.x;\
 	(dest).Max.y= (src).Max.y;\
 	(dest).Max.z = (src).Max.z;
-	
+
 #endif

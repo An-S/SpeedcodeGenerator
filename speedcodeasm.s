@@ -17,6 +17,40 @@
 .POPSEG
 .EXPORT _DELTA = _speedcodecounters - _spdcdef_loc
 
+.EXPORT _setCallbackJmpAddr
+.PROC _setCallbackJmpAddr
+.IMPORT _jmpdest
+.EXPORT rtscode
+    tay
+    bne setaddr
+    cpx #0
+    bne setaddr
+    lda #<rtscode
+    ldx #>rtscode
+setaddr
+    sta _jmpdest
+    stx _jmpdest+1
+rtscode
+    rts
+
+.ENDPROC
+
+.EXPORT _fastCallback
+.PROC _fastCallback
+.EXPORT _jmpdest
+.IMPORT rtscode
+;    tay
+;    bne pushparams
+;    cpx #0
+;    beq nopush
+;pushparams
+;    jsr pushax
+;nopush
+_jmpdest = *+1
+
+    jmp rtscode
+.ENDPROC
+
 .EXPORT _fastmemcpy256
 .PROC _fastmemcpy256
     sta ptr2
@@ -25,7 +59,7 @@
     sta ptr1
     stx ptr1+1
     jsr popa
-	tax ;x is not used else
+	tax ;x is not used else for copying
 	tay
 copyagain
     cpy #16

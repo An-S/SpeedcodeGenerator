@@ -7,8 +7,12 @@
 //********************************************
 //Macro definitions for generic compound types
 //********************************************
-#define SPCODE_PART_MEMBERS C(spcode_Template_t, ) C(spcode_Iterator_t, Repeats)\
-                                                            C(spcode_Callbackf_t, *Callback) C(spcode_CallbackParameter_t, *Parameters)
+#define SPCODE_PART_MEMBERS C(spcode_Template_t, )\
+    C(spcode_Iterator_t, Repeats)\
+    C(spcode_Setupf_t, *Setup)\
+    C(spcode_Callbackf_t, *Callback)\
+    C(spcode_Teardownf_t, *Teardown)\
+    C(spcode_CallbackParameter_t, *Parameters)
 
 #define SPCODE_ITERATORS(S,E) C(S, z, E) C(S, y, E) C(S, x, E) C(S, Part, E)
 
@@ -26,7 +30,9 @@ enum
 //*****************************************
 //Elementary types for speedcode generation
 //*****************************************
-typedef void spcode_Callbackf_t(register void*);
+typedef void fastcall spcode_Setupf_t(void*);
+typedef void fastcall spcode_Callbackf_t(void);
+typedef void fastcall spcode_Teardownf_t(void*);
 typedef void spcode_t(void);
 typedef size_t spcode_Size_t;
 typedef void spcode_Assembly_t;
