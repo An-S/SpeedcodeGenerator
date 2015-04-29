@@ -121,9 +121,10 @@ int TestSpeedcodeCreateFunc(void)
 		1,
 		1,
 		sizeof(spcodepartdef)/sizeof(spcodepartdef[0])}},
+		spcodepartdef,
 		NULL,
-		NULL,
-		spcodepartdef
+		NULL
+
 	};
 
 	extern unsigned int srcadr,destadr;

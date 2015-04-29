@@ -49,8 +49,9 @@ void __fastcall__ spcode_CopyPart(register spcode_PartSpec_t *spcode_partdef)
     //Optimization could be to copy only necessary information like pointer to assembly and size
     //Use local pointer var i instead of spcode_def_loc.Counters.PartRepeat
 	//if (oldspec != spcode_partdef)
-    COPY_SPEEDCODEPART_SPEC(*spcode_partdef, spdcpartdef_loc);
-    //oldspec = spcode_partdef;
+
+    //COPY_SPEEDCODEPART_SPEC(*spcode_partdef, spdcpartdef_loc);
+    spdcpartdef_loc = *spcode_partdef;
 
 	//not needed anymore. is handled by own asm call code
 	//if(NULL == spdcpartdef_loc.Callback){spdcpartdef_loc.Callback = (void*)&rts;}

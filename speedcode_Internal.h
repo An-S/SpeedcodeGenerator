@@ -64,9 +64,9 @@
             spcode_Iterators_t;
         }Limits;
         //This union must be the first element of the struct spcode, because some code relies on this
+        spcode_PartSpec_t *PartSpec;
         spcode_Setupf_t *Setup;
         spcode_Teardownf_t *Teardown;
-        spcode_PartSpec_t *PartSpec;
     };
 
     typedef struct
