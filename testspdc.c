@@ -121,6 +121,8 @@ int TestSpeedcodeCreateFunc(void)
 		1,
 		1,
 		sizeof(spcodepartdef)/sizeof(spcodepartdef[0])}},
+		NULL,
+		NULL,
 		spcodepartdef
 	};
 

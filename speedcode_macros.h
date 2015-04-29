@@ -22,6 +22,8 @@
 	(dest).Max.Part = (src).Max.Part;\
 	(dest).Max.x = (src).Max.x;\
 	(dest).Max.y= (src).Max.y;\
-	(dest).Max.z = (src).Max.z;
+	(dest).Max.z = (src).Max.z;\
+	(dest).Spec.Setup = (src).Spec.Setup;\
+	(dest).Spec.Teardown = (src).Spec.Teardown;
 
 #endif

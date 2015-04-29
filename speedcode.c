@@ -201,6 +201,7 @@ spcode_t* __fastcall__ spcode_Create(spcode_Spec_t* spdcdef, spcode_t *dest)
 	//Calculate offset between index and maxima array, needed in spcode_create_loop(...
 	//counter_offset = (uint8_t*)counters - (uint8_t*)&spcode_def_loc.repeat.z;
 
+    if (NULL != spcode_def_loc.Spec.Setup) spcode_def_loc.Spec.Setup(NULL);
 	//Start recursive procedure for spcode generation
 	spcode_Replicate(
 		//&spcode_def_loc.repeat.z,
@@ -211,5 +212,7 @@ spcode_t* __fastcall__ spcode_Create(spcode_Spec_t* spdcdef, spcode_t *dest)
 		address of the array with the repeat limits are equal, the return value of memcpy can be passed through*/
 
 	*(unsigned char*)spcode_StoreDest=RTS;
+	if (NULL != spcode_def_loc.Spec.Teardown) spcode_def_loc.Spec.Teardown(NULL);
+
 	return dest;
 }
